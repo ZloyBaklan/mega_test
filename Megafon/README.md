@@ -1,14 +1,14 @@
 # Python должен быть уже установлен.
 ## Правильно будет установить виртуальное окружение:
-{ python -m venv venv } 
+` python -m venv venv ` 
 # Далее необходимо его активировать:
-{ source venv/Scripts/activate }
+` source venv/Scripts/activate `
 # Установить зависимости:
-{ pip install -r requierements.txt }
+` pip install -r requierements.txt `
 # Запустить приложение:
-{ python app.py }
+` python app.py `
 # Можно открыть страницу в браузере и добавить к адресу url нужной страницы, например:
-{ http://localhost:5000/todo/api/v1.0/tasks }
+` http://localhost:5000/tasks `
 
 # В случае изменений в файле, есть проверка на PEP8:
-{ flake8 }
+` flake8 `
