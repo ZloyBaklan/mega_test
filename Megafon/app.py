@@ -1,26 +1,41 @@
+import datetime
 from flask import Flask, jsonify, abort, make_response, request
 
 app = Flask(__name__)
 
-tasks = [
+Traffic = [
     {
         'id': 1,
-        'title': u'People',
-        'description': u'Masha, Sveta, Roman, Fedor, Timoha',
-        'done': False
-    },
+        'Name': 'For free',
+        'Start date': u'2002-01-01',
+        'End date': u'2003-01-01',
+        'Minutes': 300,
+        'SMS': 150,
+        'Traffic': 1024
+    }
+]
+
+users = [
     {
-        'id': 2,
-        'title': u'Animals',
-        'description': u'Dog, Cow, Cat, Kiwi',
+        'id': 1,
+        'Balance': 0.0,
+        'Add date': u'2002-01-01',
+        'Age': 40,
+        'City': 'Moscow',
+        'last activity': datetime.datetime.now(),
+        'Traffic': Traffic[0],
         'done': False
     },
+]
+
+goals = [
     {
-        'id': 3,
-        'title': u'Question',
-        'description': u'Good question!',
-        'done': False
-    },
+        'id': 1,
+        'Time': u'2022-01-30 15:40:11',
+        'user_id': users[0],
+        'Type': 'Call',
+        'Spent': 5
+    }
 ]
 
 
@@ -29,14 +44,14 @@ def get_home():
     return 'WELCOME to my server'
 
 
-@app.route('/tasks', methods=['GET'])
-def get_tasks():
-    return jsonify({'tasks': tasks})
+@app.route('/users', methods=['GET'])
+def get_users():
+    return jsonify({'users': users})
 
 
-@app.route('/tasks/<int:task_id>', methods=['GET'])
+@app.route('/users/<int:task_id>', methods=['GET'])
 def get_task(task_id):
-    task = filter(lambda t: t['id'] == task_id, tasks)
+    task = filter(lambda t: t['id'] == task_id, users)
     if len(task) == 0:
         abort(404)
     return jsonify({'task': task[0]})
@@ -47,46 +62,46 @@ def not_found(error):
     return make_response(jsonify({'error': 'Страница не найдена'}), 404)
 
 
-@app.route('/tasks/<int:task_id>', methods=['PUT'])
+@app.route('/users/<int:task_id>', methods=['PUT'])
 def update_task(task_id):
-    task = filter(lambda t: t['id'] == task_id, tasks)
+    task = filter(lambda t: t['id'] == task_id, users)
     if len(task) == 0:
         abort(404)
     if not request.json:
         abort(400)
-    if 'title' in request.json:
+    if 'balance' in request.json:
         abort(400)
-    if 'description' in request.json:
+    if 'Add date' in request.json:
         abort(400)
     if 'done' in request.json and type(request.json['done']) is not bool:
         abort(400)
-    task[0]['title'] = request.json.get('title', task[0]['title'])
-    task[0]['description'] = request.json.get('description',
-                                              task[0]['description'])
+    task[0]['balance'] = request.json.get('balance', task[0]['balance'])
+    task[0]['Add date'] = request.json.get('Add date',
+                                           task[0]['Add date'])
     task[0]['done'] = request.json.get('done', task[0]['done'])
     return jsonify({'task': task[0]})
 
 
-@app.route('/tasks/<int:task_id>', methods=['DELETE'])
+@app.route('/users/<int:task_id>', methods=['DELETE'])
 def delete_task(task_id):
-    task = filter(lambda t: t['id'] == task_id, tasks)
+    task = filter(lambda t: t['id'] == task_id, users)
     if len(task) == 0:
         abort(404)
-    tasks.remove(task[0])
+    users.remove(task[0])
     return jsonify({'result': True})
 
 
-@app.route('/tasks', methods=['POST'])
+@app.route('/users', methods=['POST'])
 def create_task():
-    if not request.json or 'title' not in request.json:
+    if not request.json or 'balance' not in request.json:
         abort(400)
     task = {
-        'id': tasks[-1]['id'] + 1,
-        'title': request.json['title'],
-        'description': request.json.get('description', ""),
+        'id': users[-1]['id'] + 1,
+        'balance': request.json['balance'],
+        'Add date': request.json.get('Add date', ""),
         'done': False
     }
-    tasks.append(task)
+    users.append(task)
     return jsonify({'task': task}), 201
 
 
